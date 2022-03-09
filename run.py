@@ -32,9 +32,25 @@ def user_response():
     """
     response = input(">")
     print(response)
-    return response
+    validate_response_int(response)
+    
+    
 
+
+def validate_response_int(response):
+    """
+    Inside the try the string value is converted into integers,
+    It raises ValueError if it can't convert into ints or if there are too many numbers
+    """
+    try:
+        if len(response) != 1:
+            raise ValueError(
+                f"Only one number is required, please try again.\n"
+            )
+    except ValueError as e:
+        print(f"Invalid response: {e}")
 
 
 welcome()
 user_response()
+
