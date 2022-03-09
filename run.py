@@ -16,7 +16,6 @@ SHEET = GSPREAD_CLIENT.open('sci_fi_series_database')
 series_data = SHEET.worksheet('data')
 titles = series_data.get_all_values()
 
-response = ''
 
 
 def welcome():
@@ -32,13 +31,15 @@ def user_response_int():
     """
     gets response from the user
     """
-    global response
-    response = input(">")
-    validate_response_int(response)
-    
+    while True:
+        response = input(">")
+        
+        if validate_response(response):
+            break
+    return response
 
 
-def validate_response_int(response):
+def validate_response(response):
     """
     Inside the try the string value is converted into integers,
     It raises ValueError if it can't convert into ints or if there are too 
@@ -48,51 +49,68 @@ def validate_response_int(response):
         [int(response)]
         if len(response) != 1:
             raise ValueError("Only one number is required")
-            user_response_int()
     except ValueError as e:
         print(f"Invalid response: {e}, please try again.\n")
-        user_response_int()
+        return False
+    return True
 
 
-def menu_answers(response):
+def menu_answers(choice):
     """
     selects category depending on users intial response
     """
-    if int(response) == 1:
+    if int(choice) == 1:
         category = "title"
-    elif int(response) == 2:
+        column = 1
+    elif int(choice) == 2:
         category = "sub-genre"
-    elif int(response) == 3:
+        column = 3
+    elif int(choice) == 3:
         category = "release year"
-    elif int(response) == 4:
+        column = 6
+    elif int(choice) == 4:
         category = "creator"
-    elif int(response) == 5:
+        column = 4
+    elif int(choice) == 5:
         category = "actors"
-    elif int(response) == 6:
-        category = "audience score"
-    elif int(response) == 1:
-        category = "title"
+        column = 5
     else:
-        print("What?")
-    print(response)
-    print(category)
+        print("Error")
+    chosen_search(category, column)
 
 
-def search_function(keyword, category):
+def chosen_search(chosen, column):
+    """
+    Prints instructions to the user regarding their last input
+    """
+    keyword = input(f"You've chosen to search by {chosen}. Type in a relevant keyword:\n>")
+    search_function(keyword, chosen, column)
+
+
+def search_function(keyword, chosen, column):
     """
     Searches through the column of seleted category and compares the keyword
     to the items in the column.
     """
-    column = SHEET.worksheet(category)
-    search_results= []
-    count = 0
-    for item in column:
+    chosen_col = SHEET.worksheet('data').col_values(1)
+    search_results = []
+    for item in chosen_col:
         if keyword.lower() in item.lower():
-            match = search_results.append(item)
-    print(search_results)        
+            search_results.append(item)
+    print(f"The following items matched your search:\n{search_results}")
+    if not search_results:
+        print("No matching results, please try again.")
 
 
-welcome()
-user_response_int()
-menu_answers(response)
+def main():
+    """
+    runs the program
+    """
+    welcome()
+    validated_response = user_response_int()
+    menu_answers(validated_response)
+    
+    
+
+main()
 
