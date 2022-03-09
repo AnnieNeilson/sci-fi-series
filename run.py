@@ -47,8 +47,10 @@ def validate_response(response):
     """
     try:
         [int(response)]
-        if len(response) != 1:
-            raise ValueError("Only one number is required")
+        if int(response) > 5:
+            raise ValueError("Enter a number from 1-5")
+        elif int(response) < 1:
+            raise ValueError("Enter a number from 1-5")
     except ValueError as e:
         print(f"Invalid response: {e}, please try again.\n")
         return False
@@ -84,15 +86,18 @@ def chosen_search(chosen, column):
     Prints instructions to the user regarding their last input
     """
     keyword = input(f"You've chosen to search by {chosen}. Type in a relevant keyword:\n>")
-    search_function(keyword, chosen, column)
+    search_columns(keyword, chosen, column)
 
 
-def search_function(keyword, chosen, column):
+def search_columns(keyword, chosen, column):
     """
     Searches through the column of seleted category and compares the keyword
     to the items in the column.
     """
-    chosen_col = SHEET.worksheet('data').col_values(1)
+    #will have to add if statements to catch release year and actors categories
+    #figure out how to bring up titles with search results e.g. subgenres
+    #rethink how I want the results to look
+    chosen_col = SHEET.worksheet('data').col_values(column)
     search_results = []
     for item in chosen_col:
         if keyword.lower() in item.lower():
@@ -100,6 +105,7 @@ def search_function(keyword, chosen, column):
     print(f"The following items matched your search:\n{search_results}")
     if not search_results:
         print("No matching results, please try again.")
+        chosen_search(chosen, column)
 
 
 def main():
