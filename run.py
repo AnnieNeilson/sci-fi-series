@@ -58,7 +58,7 @@ def menu_answers(response):
     """
     selects category depending on users intial response
     """
-    if int(response) == 1 or 7:
+    if int(response) == 1:
         category = "title"
     elif int(response) == 2:
         category = "sub-genre"
@@ -70,10 +70,26 @@ def menu_answers(response):
         category = "actors"
     elif int(response) == 6:
         category = "audience score"
+    elif int(response) == 1:
+        category = "title"
     else:
         print("What?")
     print(response)
     print(category)
+
+
+def search_function(keyword, category):
+    """
+    Searches through the column of seleted category and compares the keyword
+    to the items in the column.
+    """
+    column = SHEET.worksheet(category)
+    search_results= []
+    count = 0
+    for item in column:
+        if keyword.lower() in item.lower():
+            match = search_results.append(item)
+    print(search_results)        
 
 
 welcome()
