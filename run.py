@@ -16,6 +16,7 @@ SHEET = GSPREAD_CLIENT.open('sci_fi_series_database')
 series_data = SHEET.worksheet('data')
 titles = series_data.get_all_values()
 
+
 def welcome():
     """
     Prints welcome message and navigation instructions to the user
@@ -24,4 +25,16 @@ def welcome():
     print(instructions.INSTRUCTIONS_DESCRIPTION)
     print(instructions.MENU)
 
+
+def user_response():
+    """
+    gets response from the user
+    """
+    response = input(">")
+    print(response)
+    return response
+
+
+
 welcome()
+user_response()
