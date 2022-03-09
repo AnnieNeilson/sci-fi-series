@@ -16,6 +16,8 @@ SHEET = GSPREAD_CLIENT.open('sci_fi_series_database')
 series_data = SHEET.worksheet('data')
 titles = series_data.get_all_values()
 
+response = ''
+
 
 def welcome():
     """
@@ -30,8 +32,10 @@ def user_response_int():
     """
     gets response from the user
     """
+    global response
     response = input(">")
     validate_response_int(response)
+    
 
 
 def validate_response_int(response):
@@ -48,11 +52,31 @@ def validate_response_int(response):
     except ValueError as e:
         print(f"Invalid response: {e}, please try again.\n")
         user_response_int()
-    int_response = int(response)
-    return int_response
 
+
+def menu_answers(response):
+    """
+    selects category depending on users intial response
+    """
+    if int(response) == 1 or 7:
+        category = "title"
+    elif int(response) == 2:
+        category = "sub-genre"
+    elif int(response) == 3:
+        category = "release year"
+    elif int(response) == 4:
+        category = "creator"
+    elif int(response) == 5:
+        category = "actors"
+    elif int(response) == 6:
+        category = "audience score"
+    else:
+        print("What?")
+    print(response)
+    print(category)
 
 
 welcome()
 user_response_int()
+menu_answers(response)
 
