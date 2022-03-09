@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
+import instructions
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -15,5 +16,12 @@ SHEET = GSPREAD_CLIENT.open('sci_fi_series_database')
 series_data = SHEET.worksheet('data')
 titles = series_data.get_all_values()
 
-print(titles)
+def welcome():
+    """
+    Prints welcome message and navigation instructions to the user
+    """
+    print(instructions.WELCOME)
+    print(instructions.INSTRUCTIONS_DESCRIPTION)
+    print(instructions.MENU)
 
+welcome()
