@@ -24,12 +24,12 @@ def user_response_int():
     while True:
         response = input(">")
         
-        if validate_response(response):
+        if validate_menu_response(response):
             break
     return response
 
 
-def validate_response(response):
+def validate_menu_response(response):
     """
     Inside the try the string value is converted into integers,
     It raises ValueError if it can't convert into ints or if there are too 
@@ -90,6 +90,19 @@ def find_row(item_cell):
     return row_num
 
 
+def search_in_dictionary(dictionary):
+    """
+    Checks length of dictionary, if more than 1 requests user choose an item.
+    Offers user choice of categories for more information.
+    """
+    if len(dictionary) > 1:
+        dict_num = int(input("Which result would you like more information on?\n>"))
+        print(dictionary[dict_num])
+    category_choice = input(f"What would you like to know about {dictionary[dict_num]}?\n{instructions.CATEGORIES}\n>")
+    print(category_choice)
+
+
+
 def search_columns(keyword, chosen, column):
     """
     Searches through the column of seleted category and compares the keyword
@@ -108,8 +121,11 @@ def search_columns(keyword, chosen, column):
                 item_title = SHEET.worksheet('data').cell(item_row, 1).value
                 full_item = item_title + " : " + item
                 search_results.append(full_item)
+                
         if search_results != []:
-            print(f"The following items matched your search:\n{search_results}")
+            d1= dict(enumerate(search_results))
+            print(f"The following items matched your search:\n{d1}")
+            search_in_dictionary(d1)
         elif search_results == []:
             print("No matching results, please try again.")
             chosen_search(chosen, column)
@@ -118,7 +134,9 @@ def search_columns(keyword, chosen, column):
             if keyword.lower() in item.lower():
                 search_results.append(item)            
         if search_results != []:
-            print(f"The following items matched your search:\n{search_results}")
+            d1= dict(enumerate(search_results))
+            print(f"The following items matched your search:\n{d1}")
+            search_in_dictionary(d1)
         elif search_results == []:
             print("No matching results, please try again.")
             chosen_search(chosen, column)
