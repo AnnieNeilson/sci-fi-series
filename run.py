@@ -89,6 +89,17 @@ def chosen_search(chosen, column):
     search_columns(keyword, chosen, column)
 
 
+def find_row(item_cell):
+    """ 
+    Finds the row of a specific cell, so other items can be found from this number.
+    """
+    row_index = item_cell.index("R",1)
+    col_ind = item_cell.index("C",2)
+    row_ind = row_index + 1
+    row_num = item_cell[row_ind:col_ind]
+    return row_num
+
+
 def search_columns(keyword, chosen, column):
     """
     Searches through the column of seleted category and compares the keyword
@@ -98,11 +109,28 @@ def search_columns(keyword, chosen, column):
     #figure out how to bring up titles with search results e.g. subgenres
     #rethink how I want the results to look
     chosen_col = SHEET.worksheet('data').col_values(column)
+    # title_col = SHEET.worksheet('data').col_values(1)
     search_results = []
-    for item in chosen_col:
-        if keyword.lower() in item.lower():
-            search_results.append(item)
-    print(f"The following items matched your search:\n{search_results}")
+    if column != 1:
+        for item in chosen_col:
+            if keyword.lower() in item.lower():
+                cell = str(SHEET.worksheet('data').find(item))
+                item_row = find_row(cell)
+                item_title = SHEET.worksheet('data').cell(item_row, 1).value
+                full_item = item_title + " : " + item
+                search_results.append(full_item)
+        print(f"The following items matched your search:\n{search_results}")
+    elif column == 1:
+        for item in chosen_col:
+            if keyword.lower() in item.lower():
+                # cell = str(SHEET.worksheet('data').find(item))
+                # item_row = find_row(cell)
+                # item_title = SHEET.worksheet('data').cell(item_row, 1).value
+                # full_item = item_title + " : " + item
+                search_results.append(item)            
+        print(f"The following items matched your search:\n{search_results}")
+    
+
     if not search_results:
         print("No matching results, please try again.")
         chosen_search(chosen, column)
