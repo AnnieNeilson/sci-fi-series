@@ -14,17 +14,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('sci_fi_series_database')
 
 series_data = SHEET.worksheet('data')
-titles = series_data.get_all_values()
-
-
-
-def welcome():
-    """
-    Prints welcome message and navigation instructions to the user
-    """
-    print(instructions.WELCOME)
-    print(instructions.INSTRUCTIONS_DESCRIPTION)
-    print(instructions.MENU)
+titles = series_data.get_all_values() 
 
 
 def user_response_int():
@@ -85,7 +75,7 @@ def chosen_search(chosen, column):
     """
     Prints instructions to the user regarding their last input
     """
-    keyword = input(f"You've chosen to search by {chosen}. Type in a relevant keyword:\n>")
+    keyword = input(f"You've chosen to search by {chosen}. Type in a relevant search term:\n>")
     search_columns(keyword, chosen, column)
 
 
@@ -106,12 +96,11 @@ def search_columns(keyword, chosen, column):
     to the items in the column.
     """
     #will have to add if statements to catch release year and actors categories
-    #figure out how to bring up titles with search results e.g. subgenres
     #rethink how I want the results to look
-    chosen_col = SHEET.worksheet('data').col_values(column)
-    # title_col = SHEET.worksheet('data').col_values(1)
+    whole_chosen_col = SHEET.worksheet('data').col_values(column)
+    chosen_col = whole_chosen_col[1:]
     search_results = []
-    if column != 1:
+    if column != 1:   
         for item in chosen_col:
             if keyword.lower() in item.lower():
                 cell = str(SHEET.worksheet('data').find(item))
@@ -119,32 +108,32 @@ def search_columns(keyword, chosen, column):
                 item_title = SHEET.worksheet('data').cell(item_row, 1).value
                 full_item = item_title + " : " + item
                 search_results.append(full_item)
-        print(f"The following items matched your search:\n{search_results}")
+        if search_results != []:
+            print(f"The following items matched your search:\n{search_results}")
+        elif search_results == []:
+            print("No matching results, please try again.")
+            chosen_search(chosen, column)
     elif column == 1:
         for item in chosen_col:
             if keyword.lower() in item.lower():
-                # cell = str(SHEET.worksheet('data').find(item))
-                # item_row = find_row(cell)
-                # item_title = SHEET.worksheet('data').cell(item_row, 1).value
-                # full_item = item_title + " : " + item
                 search_results.append(item)            
-        print(f"The following items matched your search:\n{search_results}")
-    
-
-    if not search_results:
-        print("No matching results, please try again.")
-        chosen_search(chosen, column)
+        if search_results != []:
+            print(f"The following items matched your search:\n{search_results}")
+        elif search_results == []:
+            print("No matching results, please try again.")
+            chosen_search(chosen, column)
 
 
 def main():
     """
     runs the program
     """
-    welcome()
+    print(instructions.INSTRUCTIONS_DESCRIPTION)
+    print(instructions.MENU)
     validated_response = user_response_int()
     menu_answers(validated_response)
     
     
-
+print(instructions.WELCOME)
 main()
 
