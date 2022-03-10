@@ -94,7 +94,7 @@ def validate_dict_keys(key, dictionary):
     try:
         if key.isdigit() == False:
             raise ValueError("That is not an option")
-        elif int(key) > len(dictionary):
+        elif int(key) > (len(dictionary) -1):
             raise KeyError("That is not an option")
     except (KeyError, ValueError) as e:
         print(f"Invalid response: {e}, please try again.\n")
@@ -107,6 +107,7 @@ def search_in_dictionary(dictionary):
     Checks length of dictionary, if more than 1 requests user choose an item.
     Offers user choice of categories for more information.
     """
+    print(len(dictionary))
     while True:
         if len(dictionary) > 1:
             dict_num = input("Which result would you like more information on?\n>")
@@ -114,9 +115,10 @@ def search_in_dictionary(dictionary):
             dict_num = input("If you would like more information please type 0\n>")
         if validate_dict_keys(dict_num, dictionary):
             break
+    print(dict_num)
     category_choice = input(f"What would you like to know about {dictionary[int(dict_num)]}?\n{instructions.CATEGORIES}\n>")
     print(category_choice)
-
+    print(dictionary[int(dict_num)])
 
 
 def search_columns(keyword, chosen, column):
@@ -124,8 +126,7 @@ def search_columns(keyword, chosen, column):
     Searches through the column of seleted category and compares the keyword
     to the items in the column.
     """
-    #will have to add if statements to catch release year and actors categories
-    #rethink how I want the results to look
+    #bug - repeated results
     whole_chosen_col = SHEET.worksheet('data').col_values(column)
     chosen_col = whole_chosen_col[1:]
     search_results = []
@@ -136,8 +137,7 @@ def search_columns(keyword, chosen, column):
                 item_row = find_row(cell)
                 item_title = SHEET.worksheet('data').cell(item_row, 1).value
                 full_item = item_title + " : " + item
-                search_results.append(full_item)
-                
+                search_results.append(full_item)               
         if search_results != []:
             d1= dict(enumerate(search_results))
             print(f"The following items matched your search:\n{d1}")
