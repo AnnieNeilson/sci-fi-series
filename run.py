@@ -80,7 +80,7 @@ def chosen_search(chosen, column):
 
 
 def find_row(item_cell):
-    """ 
+    """
     Finds the row of a specific cell, so other items can be found from this number.
     """
     row_index = item_cell.index("R",1)
@@ -91,6 +91,9 @@ def find_row(item_cell):
 
 
 def validate_dict_keys(key, dictionary):
+    """
+    Ensures the user input is a valid number
+    """
     try:
         if key.isdigit() == False:
             raise ValueError("That is not an option")
@@ -102,10 +105,26 @@ def validate_dict_keys(key, dictionary):
     return True
 
 
+def validate_category_choice(key):
+    """
+    Ensures the user input, category choice, is a valid number
+    """
+    try:
+        if key.isdigit() == False:
+            raise ValueError("That is not an option")
+        elif int(key) > 9 or int(key) < 1:
+            raise KeyError("That is not an option")
+    except (KeyError, ValueError) as e:
+        print(f"Invalid response: {e}, please try again.\n")
+        return False
+    return True
+
+
 def search_in_dictionary(dictionary):
     """
-    Checks length of dictionary, if more than 1 requests user choose an item.
+    Checks length of dictionary, if more than 1, requests user choose an item.
     Offers user choice of categories for more information.
+
     """
     print(len(dictionary))
     while True:
@@ -116,9 +135,12 @@ def search_in_dictionary(dictionary):
         if validate_dict_keys(dict_num, dictionary):
             break
     print(dict_num)
-    category_choice = input(f"What would you like to know about {dictionary[int(dict_num)]}?\n{instructions.CATEGORIES}\n>")
+    while True:
+        category_choice = input(f"What would you like to know about {dictionary[int(dict_num)]}?\n{instructions.CATEGORIES}\n>")
+        if validate_category_choice(category_choice):
+            break
     print(category_choice)
-    print(dictionary[int(dict_num)])
+    print(dictionary[int(dict_num)])    
 
 
 def search_columns(keyword, chosen, column):
@@ -137,7 +159,7 @@ def search_columns(keyword, chosen, column):
                 item_row = find_row(cell)
                 item_title = SHEET.worksheet('data').cell(item_row, 1).value
                 full_item = item_title + " : " + item
-                search_results.append(full_item)               
+                search_results.append(full_item)          
         if search_results != []:
             d1= dict(enumerate(search_results))
             print(f"The following items matched your search:\n{d1}")
