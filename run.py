@@ -133,6 +133,20 @@ def reformat_info(information):
     return new_info
 
 
+def validate_yes_or_no(input):
+    """ 
+    Checks that the user has answered either y or n
+    if not the user is asked to answer again.
+    """
+    if input == "y":
+        return True
+    elif input == "n":
+        return True
+    else:
+        print("That is not at option, please try again.")
+        return False
+
+
 def final_search_results(show, info_category, info):
     """ 
     Using information already received from the user, show title and 
@@ -160,10 +174,19 @@ def final_search_results(show, info_category, info):
         print(f"{show} received and audience score of {info} on Rotten Tomatoes.")
     else:
         print("something went wrong")
+    while True:
+        more_info = input(f"Would you like to find out more about {show}? y/n\n>").lower().strip()
+        if validate_yes_or_no(more_info):
+            break
+    if more_info == "y":
+        search_in_show_choice(show)
+    elif more_info == "n":
+        print("u said NOPE")
+        
 
 def final_results_return_all(row):
     """
-    If the user wants to know all the available information on
+    the user wants to know all the available information on
     a show this function is called.
     It retrieves all the relevant data and returns it to the
     user in a way that is easy to read and understand.
@@ -175,6 +198,25 @@ def final_results_return_all(row):
     actors = reformat_info(show_info[4])
     print(f"Sub-genres:\n{sub_genres}\n\nCreated by:\n{creators}\n\nStarring:\n{actors}\n")
     print(f"Release Date:\n{show_info[0]} first aired in {show_info[5]}\n\nStill Running?\n{show_info[6]}\n\nNo. of Seasons:\n{show_info[0]} has {show_info[7]} seasons.\n\nAudience Score:\n{show_info[0]} was given a score of {show_info[8]} on Rotten Tomatoes.")
+
+
+def search_in_show_choice(show):
+    """
+    Offers the user a selection of categories to choose from
+    to find further information.
+    """
+    while True:
+        category_choice = input(f"What would you like to know about {show}?\n{instructions.CATEGORIES}\n>")
+        if validate_category_choice(category_choice):
+            break
+    cell = str(SHEET.worksheet('data').find(show))
+    item_row = find_row(cell)
+    item_col = int(category_choice) + 1
+    info = str(SHEET.worksheet('data').cell(item_row, item_col).value)
+    if int(category_choice) < 9:
+        final_search_results(show, int(category_choice), info)
+    else:
+        final_results_return_all(item_row)
 
 
 def search_in_dictionary(dictionary):
@@ -191,21 +233,8 @@ def search_in_dictionary(dictionary):
             dict_num = input("If you would like more information please type 0\n>")
         if validate_dict_keys(dict_num, dictionary):
             break
-    print(dict_num)
     show_title = str(dictionary[int(dict_num)].split('-')[0]).strip()
-    while True:
-        category_choice = input(f"What would you like to know about {show_title}?\n{instructions.CATEGORIES}\n>")
-        if validate_category_choice(category_choice):
-            break
-    cell = str(SHEET.worksheet('data').find(show_title))
-    item_row = find_row(cell)
-    item_col = int(category_choice) + 1
-    info = str(SHEET.worksheet('data').cell(item_row, item_col).value)
-    if int(category_choice) < 9:
-        final_search_results(show_title, int(category_choice), info)
-    else:
-        final_results_return_all(item_row)
-
+    search_in_show_choice(show_title)
 
 
 def search_columns(keyword, chosen, column):
@@ -230,7 +259,7 @@ def search_columns(keyword, chosen, column):
             search_in_dictionary(d1)
         elif search_results == []:
             print("No matching results, please try again.")
-            chosen_search(chosen, column)
+            chosen_search( chosen, column)
     elif column == 1:
         for item in chosen_col:
             if keyword.lower() in item.lower():
