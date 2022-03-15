@@ -169,7 +169,7 @@ def final_search_results(show, info_category, info):
     elif info_category == 6:
         print(f"I need to add more detail to the WS but for now : {info}")
     elif info_category == 7:
-        print(f"{show} has {info} seasons.")
+        print(f"{show} has {info} season/s.")
     elif info_category == 8:
         print(f"{show} received an audience score of {info} on Rotten Tomatoes.")
     else:
@@ -213,7 +213,7 @@ def final_results_return_all(row):
     creators = reformat_info(show_info[3])
     actors = reformat_info(show_info[4])
     print(f"Sub-genres:\n{sub_genres}\n\nCreated by:\n{creators}\n\nStarring:\n{actors}\n")
-    print(f"Release Date:\n{show_info[0]} first aired in {show_info[5]}\n\nStill Running?\n{show_info[6]}\n\nNo. of Seasons:\n{show_info[0]} has {show_info[7]} seasons.\n\nAudience Score:\n{show_info[0]} was given a score of {show_info[8]} on Rotten Tomatoes.")
+    print(f"Release Date:\n{show_info[0]} first aired in {show_info[5]}\n\nStill Running?\n{show_info[6]}\n\nNo. of Seasons:\n{show_info[0]} has {show_info[7]} season/s.\n\nAudience Score:\n{show_info[0]} was given a score of {show_info[8]} on Rotten Tomatoes.\n")
     new_search()
 
 
@@ -241,8 +241,6 @@ def search_in_dictionary(dictionary):
     Checks length of dictionary, if more than 1, requests user choose an item.
     Offers user choice of categories for more information.
     """
-    
-    print(len(dictionary))
     while True:
         if len(dictionary) > 1:
             dict_num = input("Which result would you like more information on?\n>")
