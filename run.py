@@ -121,12 +121,48 @@ def validate_category_choice(key):
     return True
 
 
+def reformat_info(information):
+    list_split = information.split('/')
+    new_info = ', '.join(list_split)
+    return new_info
+
+
+def final_search_results(show, info_category, info):
+    """ 
+    Using information already received from the user, show title and 
+    area of interest this function returns the relevant information
+    in an easy to understand format.
+    """
+    if info_category == 1:
+        print(f"{show}:\n{info}")
+    elif info_category == 2:
+        genres = reformat_info(info)
+        print(f"Aside from science fiction, {show} has the following sub-genre/s:\n{genres}")
+    elif info_category == 3:
+        creators = reformat_info(info)
+        print(f"{show} was created by:\n{creators}")
+    elif info_category == 4:
+        cast = reformat_info(info)
+        print(f"The cast of {show} includes:\n{cast}")
+    elif info_category == 5:
+        print(f"{show} was first released in {info}")
+    elif info_category == 6:
+        print(f"I need to add more detail to the WS but for now : {info}")
+    elif info_category == 7:
+        print(f"{show} had {info} seasons.")
+    elif info_category == 8:
+        print(f"{show} received and audience score of {info} on Rotten Tomatoes.")
+    else:
+        print("something went wrong")
+
+def final_results_return_all():
+
+
+
 def search_in_dictionary(dictionary):
     """
     Checks length of dictionary, if more than 1, requests user choose an item.
     Offers user choice of categories for more information.
-    
-
     """
     
     print(len(dictionary))
@@ -138,20 +174,20 @@ def search_in_dictionary(dictionary):
         if validate_dict_keys(dict_num, dictionary):
             break
     print(dict_num)
-    show_title = dictionary[int(dict_num)].split(':')[0]
+    show_title = str(dictionary[int(dict_num)].split('-')[0]).strip()
     while True:
         category_choice = input(f"What would you like to know about {show_title}?\n{instructions.CATEGORIES}\n>")
         if validate_category_choice(category_choice):
             break
-    print(category_choice)
-    
-    print(show_title.strip())
     cell = str(SHEET.worksheet('data').find(show_title))
     item_row = find_row(cell)
     item_col = int(category_choice) + 1
-    print(item_row)
     info = str(SHEET.worksheet('data').cell(item_row, item_col).value)
-    print(info)
+    if category_choice < 9:
+        final_search_results(show_title, int(category_choice), info)
+    else:
+        final_results_return_all(item_row)
+
 
 
 def search_columns(keyword, chosen, column):
@@ -168,7 +204,7 @@ def search_columns(keyword, chosen, column):
                 cell = str(SHEET.worksheet('data').find(item))
                 item_row = find_row(cell)
                 item_title = SHEET.worksheet('data').cell(item_row, 1).value
-                full_item = item_title + " : " + item
+                full_item = item_title + " - " + item
                 search_results.append(full_item)          
         if search_results != []:
             d1= dict(enumerate(search_results))
