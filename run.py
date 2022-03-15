@@ -133,14 +133,14 @@ def reformat_info(information):
     return new_info
 
 
-def validate_yes_or_no(input):
+def validate_yes_or_no(answer):
     """ 
     Checks that the user has answered either y or n
     if not the user is asked to answer again.
     """
-    if input == "y":
+    if answer == "y":
         return True
-    elif input == "n":
+    elif answer == "n":
         return True
     else:
         print("That is not at option, please try again.")
@@ -171,7 +171,7 @@ def final_search_results(show, info_category, info):
     elif info_category == 7:
         print(f"{show} has {info} seasons.")
     elif info_category == 8:
-        print(f"{show} received and audience score of {info} on Rotten Tomatoes.")
+        print(f"{show} received an audience score of {info} on Rotten Tomatoes.")
     else:
         print("something went wrong")
     while True:
@@ -181,8 +181,24 @@ def final_search_results(show, info_category, info):
     if more_info == "y":
         search_in_show_choice(show)
     elif more_info == "n":
-        print("u said NOPE")
+        new_search()
         
+
+def new_search():
+    """
+    Asks the user if they would like to start a new search,
+    if not the program exits
+    """
+    while True:
+        start_new_search = input("Would you like to start a new search? y/n\n>").lower().strip()
+        if validate_yes_or_no(start_new_search):
+            break
+    if start_new_search == "y":
+        main()
+    elif start_new_search == "n":
+        print("I hope you found everything you were looking for,\nGoodbye!")
+        exit()
+
 
 def final_results_return_all(row):
     """
@@ -198,6 +214,7 @@ def final_results_return_all(row):
     actors = reformat_info(show_info[4])
     print(f"Sub-genres:\n{sub_genres}\n\nCreated by:\n{creators}\n\nStarring:\n{actors}\n")
     print(f"Release Date:\n{show_info[0]} first aired in {show_info[5]}\n\nStill Running?\n{show_info[6]}\n\nNo. of Seasons:\n{show_info[0]} has {show_info[7]} seasons.\n\nAudience Score:\n{show_info[0]} was given a score of {show_info[8]} on Rotten Tomatoes.")
+    new_search()
 
 
 def search_in_show_choice(show):
