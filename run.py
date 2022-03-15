@@ -76,15 +76,16 @@ def chosen_search(chosen, column):
     Prints instructions to the user regarding their last input
     """
     keyword = input(f"You've chosen to search by {chosen}. Type in a relevant search term:\n>")
-    search_columns(keyword, chosen, column)
+    search_columns(keyword.strip(), chosen, column)
 
 
 def find_row(item_cell):
     """
-    Finds the row of a specific cell, so other items can be found from this number.
+    Finds the row of a specific cell, so other items can be found from
+    this number.
     """
-    row_index = item_cell.index("R",1)
-    col_ind = item_cell.index("C",2)
+    row_index = item_cell.index("R", 1)
+    col_ind = item_cell.index("C", 2)
     row_ind = row_index + 1
     row_num = item_cell[row_ind:col_ind]
     return row_num
@@ -124,8 +125,10 @@ def search_in_dictionary(dictionary):
     """
     Checks length of dictionary, if more than 1, requests user choose an item.
     Offers user choice of categories for more information.
+    
 
     """
+    
     print(len(dictionary))
     while True:
         if len(dictionary) > 1:
@@ -135,12 +138,20 @@ def search_in_dictionary(dictionary):
         if validate_dict_keys(dict_num, dictionary):
             break
     print(dict_num)
+    show_title = dictionary[int(dict_num)].split(':')[0]
     while True:
-        category_choice = input(f"What would you like to know about {dictionary[int(dict_num)]}?\n{instructions.CATEGORIES}\n>")
+        category_choice = input(f"What would you like to know about {show_title}?\n{instructions.CATEGORIES}\n>")
         if validate_category_choice(category_choice):
             break
     print(category_choice)
-    print(dictionary[int(dict_num)])    
+    
+    print(show_title.strip())
+    cell = str(SHEET.worksheet('data').find(show_title))
+    item_row = find_row(cell)
+    item_col = int(category_choice) + 1
+    print(item_row)
+    info = str(SHEET.worksheet('data').cell(item_row, item_col).value)
+    print(info)
 
 
 def search_columns(keyword, chosen, column):
@@ -148,7 +159,6 @@ def search_columns(keyword, chosen, column):
     Searches through the column of seleted category and compares the keyword
     to the items in the column.
     """
-    #bug - repeated results
     whole_chosen_col = SHEET.worksheet('data').col_values(column)
     chosen_col = whole_chosen_col[1:]
     search_results = []
