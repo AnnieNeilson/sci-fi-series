@@ -122,6 +122,12 @@ def validate_category_choice(key):
 
 
 def reformat_info(information):
+    """
+    Takes a string of information and splits it into
+    a list. It then joins the items of the list into
+    a new string, each item separated by a comma. This
+    is used to make the information more presentable.
+    """
     list_split = information.split('/')
     new_info = ', '.join(list_split)
     return new_info
@@ -149,14 +155,26 @@ def final_search_results(show, info_category, info):
     elif info_category == 6:
         print(f"I need to add more detail to the WS but for now : {info}")
     elif info_category == 7:
-        print(f"{show} had {info} seasons.")
+        print(f"{show} has {info} seasons.")
     elif info_category == 8:
         print(f"{show} received and audience score of {info} on Rotten Tomatoes.")
     else:
         print("something went wrong")
 
-def final_results_return_all():
-
+def final_results_return_all(row):
+    """
+    If the user wants to know all the available information on
+    a show this function is called.
+    It retrieves all the relevant data and returns it to the
+    user in a way that is easy to read and understand.
+    """
+    show_info = SHEET.worksheet('data').row_values(row)
+    print(f"All available information on {show_info[0]}:\nDescription:\n{show_info[1]}\n")
+    sub_genres = reformat_info(show_info[2])
+    creators = reformat_info(show_info[3])
+    actors = reformat_info(show_info[4])
+    print(f"Sub-genres:\n{sub_genres}\n\nCreated by:\n{creators}\n\nStarring:\n{actors}\n")
+    print(f"Release Date:\n{show_info[0]} first aired in {show_info[5]}\n\nStill Running?\n{show_info[6]}\n\nNo. of Seasons:\n{show_info[0]} has {show_info[7]} seasons.\n\nAudience Score:\n{show_info[0]} was given a score of {show_info[8]} on Rotten Tomatoes.")
 
 
 def search_in_dictionary(dictionary):
@@ -183,7 +201,7 @@ def search_in_dictionary(dictionary):
     item_row = find_row(cell)
     item_col = int(category_choice) + 1
     info = str(SHEET.worksheet('data').cell(item_row, item_col).value)
-    if category_choice < 9:
+    if int(category_choice) < 9:
         final_search_results(show_title, int(category_choice), info)
     else:
         final_results_return_all(item_row)
