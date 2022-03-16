@@ -306,10 +306,31 @@ def add_title(search_term):
     return full_item
 
 
+def print_search_results(list):
+    """
+    Takes the returned search results, passes the 
+    list_to_string function, to make the results more aesthetically
+    pleasing. 
+    Creates a dictionary of results so the separate items
+    can still be accessed by the user.
+    """
+    if list:
+        results_str = results_list_to_string(list)
+        print(f"The following item/s matched your search:\n{results_str}")
+        results_dict = dict(enumerate(list))
+        search_in_dictionary(results_dict)
+    elif not list:
+        print("No matching results, please try again.")
+        chosen_search(chosen, column)
+
+
 def search_columns(keyword, chosen, column):
     """
-    Searches through the column of seleted category and compares the keyword
+    Searches through the column of selected category and compares the keyword
     to the items in the column.
+    If any category other than 'title' is selected this function calls the
+    add_title function, to create a new str with the appropriate title affixed
+    If 'title' is selected this function is skipped.
     """
     is_response_menu(keyword)
     whole_chosen_col = SHEET.worksheet('data').col_values(column)
@@ -320,26 +341,11 @@ def search_columns(keyword, chosen, column):
             if keyword.lower() in item.lower():
                 full_item = add_title(item)
                 search_results.append(full_item)
-        if search_results:
-            results_str = results_list_to_string(search_results)
-            print(f"The following item/s matched your search:\n{results_str}")
-            results_dict = dict(enumerate(search_results))
-            search_in_dictionary(results_dict)
-        elif not search_results:
-            print("No matching results, please try again.")
-            chosen_search(chosen, column)
-
     elif column == 1:
         for item in chosen_col:
             if keyword.lower() in item.lower():
                 search_results.append(item)
-        if search_results:
-            results_dict = dict(enumerate(search_results))
-            print(f"The following item/s matched your search:\n{results_dict}")
-            search_in_dictionary(results_dict)
-        elif not search_results:
-            print("No matching results, please try again.")
-            chosen_search(chosen, column)
+    print_search_results(search_results)    
 
 
 def main():
