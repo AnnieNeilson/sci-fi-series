@@ -86,10 +86,9 @@ def chosen_search(chosen, column):
     """
     Prints instructions to the user regarding their last input
     """
-    keyword = str(input(f"You've chosen to search by {chosen}. Type in a relevant"
-                    " search term:\n>")).strip()
-    # search_columns(keyword, chosen, column)
-    return keyword
+    search_term = str(input(f"You've chosen to search by {chosen}. Type in a "
+                             "relevant search term:\n>")).strip()
+    search_columns(search_term, column, chosen)
 
 
 def find_row(item_cell):
@@ -308,7 +307,7 @@ def add_title(search_term):
     return full_item
 
 
-def print_search_results(lst):
+def print_search_results(lst, column, category):
     """
     Takes the returned search results, passes the
     list_to_string function, to make the results more aesthetically
@@ -319,18 +318,18 @@ def print_search_results(lst):
     So the user can try a new search term.
     """
     if lst:
+        results_dict = dict(enumerate(lst))
         results_str = results_list_to_string(lst)
         print(f"The following item/s matched your search:\n{results_str}")
-        results_dict = dict(enumerate(lst))
+        search_in_dictionary(results_dict)
         return True
-        # search_in_dictionary(results_dict)
     elif not lst:
         print("No matching results, please try again.")
+        chosen_search(category, column)
         return False
-        # chosen_search(keyword, column)
 
 
-def search_columns(keyword, column):
+def search_columns(keyword, column, category):
     """
     Searches through the column of selected category and compares the keyword
     to the items in the column.
@@ -351,8 +350,7 @@ def search_columns(keyword, column):
         for item in chosen_col:
             if keyword.lower() in item.lower():
                 search_results.append(item)
-    return search_results
-    # print_search_results(search_results)
+    print_search_results(search_results, column, category)
 
 
 def main():
@@ -363,14 +361,7 @@ def main():
     print(instructions.MENU)
     validated_response = user_response_int()
     category, column = menu_answers(validated_response)
-    keyword = chosen_search(category, column)
-    search_results = search_columns(keyword)
-    if print_search_results(search_results):
-        print("Remember where u were")
-    if not print_search_results(search_results):
-        print("jeez")
-
-
+    chosen_search(category, column)
 
 
 print(instructions.WELCOME)
