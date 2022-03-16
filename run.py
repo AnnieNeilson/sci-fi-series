@@ -110,7 +110,7 @@ def validate_dict_keys(key, dictionary):
     try:
         if key.isdigit() is False:
             raise ValueError("That is not an option")
-        elif int(key) > (len(dictionary) - 1):
+        if int(key) > len(dictionary):
             raise KeyError("That is not an option")
     except (KeyError, ValueError) as e:
         print(f"Invalid response: {e}, please try again.\n")
@@ -134,7 +134,7 @@ def validate_category_choice(key):
     return True
 
 
-def reformat_info(information):
+def reformat_cell_info(information):
     """
     Takes a string of information and splits it into
     a list. It then joins the items of the list into
@@ -170,14 +170,14 @@ def final_search_results(show, info_category, info):
     if info_category == 1:
         print(f"{show}:\n{info}")
     elif info_category == 2:
-        genres = reformat_info(info)
+        genres = reformat_cell_info(info)
         print(f"Aside from science fiction, {show} has the following sub-genre"
               f"/s:\n{genres}")
     elif info_category == 3:
-        creators = reformat_info(info)
+        creators = reformat_cell_info(info)
         print(f"{show} was created by:\n{creators}")
     elif info_category == 4:
-        cast = reformat_info(info)
+        cast = reformat_cell_info(info)
         print(f"The cast of {show} includes:\n{cast}")
     elif info_category == 5:
         print(f"{show} was first released in {info}")
@@ -228,9 +228,9 @@ def final_results_return_all(row):
     show_info = SHEET.worksheet('data').row_values(row)
     print(f"All available information on {show_info[0]}:\nDescription:"
           f"\n{show_info[1]}\n")
-    sub_genres = reformat_info(show_info[2])
-    creators = reformat_info(show_info[3])
-    actors = reformat_info(show_info[4])
+    sub_genres = reformat_cell_info(show_info[2])
+    creators = reformat_cell_info(show_info[3])
+    actors = reformat_cell_info(show_info[4])
     print(f"Sub-genres:\n{sub_genres}\n\nCreated by:\n{creators}\n\nStar"
           f"ring:\n{actors}\n")
     print(f"Release Date:\n{show_info[0]} first aired in {show_info[5]}\n"
@@ -271,12 +271,27 @@ def search_in_dictionary(dictionary):
             dict_num = input("Which result would you like more information on?"
                              "\n>")
         else:
-            dict_num = input("If you would like more information please type 0"
+            dict_num = input("If you would like more information please type 1"
                              "\n>")
         if validate_dict_keys(dict_num, dictionary):
             break
-    show_title = str(dictionary[int(dict_num)].split('-')[0]).strip()
+    item_ind = int(dict_num) - 1
+    show_title = str(dictionary[item_ind].split('-')[0]).strip()
     search_in_show_choice(show_title)
+
+
+def results_list_to_string(result_lst):
+    """
+    Takes the list of search results and converts it to a string with
+    numbers added for the user to use to make a new choice.
+    """
+    option = 0
+    new_str = ''
+    for item in result_lst:
+        option += 1
+        string = f"({option}) {item}\n"
+        new_str += string
+    return new_str
 
 
 def add_title(search_term):
@@ -306,12 +321,14 @@ def search_columns(keyword, chosen, column):
                 full_item = add_title(item)
                 search_results.append(full_item)
         if search_results:
+            results_str = results_list_to_string(search_results)
+            print(f"The following item/s matched your search:\n{results_str}")
             results_dict = dict(enumerate(search_results))
-            print(f"The following item/s matched your search:\n{results_dict}")
             search_in_dictionary(results_dict)
         elif not search_results:
             print("No matching results, please try again.")
             chosen_search(chosen, column)
+
     elif column == 1:
         for item in chosen_col:
             if keyword.lower() in item.lower():
