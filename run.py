@@ -78,16 +78,18 @@ def menu_answers(choice):
         column = 5
     else:
         print("Error")
-    chosen_search(category, column)
+    # chosen_search(category, column)
+    return category, column
 
 
 def chosen_search(chosen, column):
     """
     Prints instructions to the user regarding their last input
     """
-    keyword = input(f"You've chosen to search by {chosen}. Type in a relevant"
-                    " search term:\n>")
-    search_columns(keyword.strip(), chosen, column)
+    keyword = str(input(f"You've chosen to search by {chosen}. Type in a relevant"
+                    " search term:\n>")).strip()
+    # search_columns(keyword, chosen, column)
+    return keyword
 
 
 def find_row(item_cell):
@@ -306,25 +308,29 @@ def add_title(search_term):
     return full_item
 
 
-def print_search_results(list):
+def print_search_results(lst):
     """
-    Takes the returned search results, passes the 
+    Takes the returned search results, passes the
     list_to_string function, to make the results more aesthetically
-    pleasing. 
+    pleasing.
     Creates a dictionary of results so the separate items
     can still be accessed by the user.
+    If there are no results it recalls the chosen_list function
+    So the user can try a new search term.
     """
-    if list:
-        results_str = results_list_to_string(list)
+    if lst:
+        results_str = results_list_to_string(lst)
         print(f"The following item/s matched your search:\n{results_str}")
-        results_dict = dict(enumerate(list))
-        search_in_dictionary(results_dict)
-    elif not list:
+        results_dict = dict(enumerate(lst))
+        return True
+        # search_in_dictionary(results_dict)
+    elif not lst:
         print("No matching results, please try again.")
-        chosen_search(chosen, column)
+        return False
+        # chosen_search(keyword, column)
 
 
-def search_columns(keyword, chosen, column):
+def search_columns(keyword, column):
     """
     Searches through the column of selected category and compares the keyword
     to the items in the column.
@@ -345,7 +351,8 @@ def search_columns(keyword, chosen, column):
         for item in chosen_col:
             if keyword.lower() in item.lower():
                 search_results.append(item)
-    print_search_results(search_results)    
+    return search_results
+    # print_search_results(search_results)
 
 
 def main():
@@ -355,7 +362,15 @@ def main():
     print(instructions.INSTRUCTIONS_DESCRIPTION)
     print(instructions.MENU)
     validated_response = user_response_int()
-    menu_answers(validated_response)
+    category, column = menu_answers(validated_response)
+    keyword = chosen_search(category, column)
+    search_results = search_columns(keyword)
+    if print_search_results(search_results):
+        print("Remember where u were")
+    if not print_search_results(search_results):
+        print("jeez")
+
+
 
 
 print(instructions.WELCOME)
