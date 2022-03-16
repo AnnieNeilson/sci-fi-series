@@ -14,7 +14,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('sci_fi_series_database')
 
 series_data = SHEET.worksheet('data')
-titles = series_data.get_all_values() 
+titles = series_data.get_all_values()
 
 
 def user_response_int():
@@ -23,20 +23,30 @@ def user_response_int():
     """
     while True:
         response = input(">")
-        
+        if is_response_menu(response):
+            break
         if validate_menu_response(response):
             break
     return response
 
 
+def is_response_menu(response):
+    """
+    Checks the user input and calls the new search function
+    which brings up the menu so the user can start a new
+    search
+    """
+    if response.lower().strip() == "menu":
+        new_search()
+
+
 def validate_menu_response(response):
     """
     Inside the try the string value is converted into integers,
-    It raises ValueError if it can't convert into ints or if there are too 
+    It raises ValueError if it can't convert into ints or if there are too
     many numbers
     """
     try:
-        [int(response)]
         if int(response) > 5:
             raise ValueError("Enter a number from 1-5")
         elif int(response) < 1:
@@ -75,7 +85,8 @@ def chosen_search(chosen, column):
     """
     Prints instructions to the user regarding their last input
     """
-    keyword = input(f"You've chosen to search by {chosen}. Type in a relevant search term:\n>")
+    keyword = input(f"You've chosen to search by {chosen}. Type in a relevant"
+                    " search term:\n>")
     search_columns(keyword.strip(), chosen, column)
 
 
@@ -95,10 +106,11 @@ def validate_dict_keys(key, dictionary):
     """
     Ensures the user input is a valid number
     """
+    is_response_menu(key)
     try:
-        if key.isdigit() == False:
+        if key.isdigit() is False:
             raise ValueError("That is not an option")
-        elif int(key) > (len(dictionary) -1):
+        elif int(key) > (len(dictionary) - 1):
             raise KeyError("That is not an option")
     except (KeyError, ValueError) as e:
         print(f"Invalid response: {e}, please try again.\n")
@@ -110,8 +122,9 @@ def validate_category_choice(key):
     """
     Ensures the user input, category choice, is a valid number
     """
+    is_response_menu(key)
     try:
-        if key.isdigit() == False:
+        if key.isdigit() is False:
             raise ValueError("That is not an option")
         elif int(key) > 9 or int(key) < 1:
             raise KeyError("That is not an option")
@@ -134,10 +147,11 @@ def reformat_info(information):
 
 
 def validate_yes_or_no(answer):
-    """ 
+    """
     Checks that the user has answered either y or n
     if not the user is asked to answer again.
     """
+    is_response_menu(answer)
     if answer == "y":
         return True
     elif answer == "n":
@@ -148,8 +162,8 @@ def validate_yes_or_no(answer):
 
 
 def final_search_results(show, info_category, info):
-    """ 
-    Using information already received from the user, show title and 
+    """
+    Using information already received from the user, show title and
     area of interest this function returns the relevant information
     in an easy to understand format.
     """
@@ -157,7 +171,8 @@ def final_search_results(show, info_category, info):
         print(f"{show}:\n{info}")
     elif info_category == 2:
         genres = reformat_info(info)
-        print(f"Aside from science fiction, {show} has the following sub-genre/s:\n{genres}")
+        print(f"Aside from science fiction, {show} has the following sub-genre"
+              f"/s:\n{genres}")
     elif info_category == 3:
         creators = reformat_info(info)
         print(f"{show} was created by:\n{creators}")
@@ -167,22 +182,24 @@ def final_search_results(show, info_category, info):
     elif info_category == 5:
         print(f"{show} was first released in {info}")
     elif info_category == 6:
-        print(f"I need to add more detail to the WS but for now : {info}")
+        print(info)
     elif info_category == 7:
         print(f"{show} has {info} season/s.")
     elif info_category == 8:
-        print(f"{show} received an audience score of {info} on Rotten Tomatoes.")
+        print(f"{show} received an audience score of {info} on Rotten Tomat"
+              "oes.")
     else:
         print("something went wrong")
     while True:
-        more_info = input(f"Would you like to find out more about {show}? y/n\n>").lower().strip()
+        more_info = input(f"Would you like to find out more about {show}? y/n"
+                          "\n>").lower().strip()
         if validate_yes_or_no(more_info):
             break
     if more_info == "y":
         search_in_show_choice(show)
     elif more_info == "n":
         new_search()
-        
+
 
 def new_search():
     """
@@ -190,7 +207,8 @@ def new_search():
     if not the program exits
     """
     while True:
-        start_new_search = input("Would you like to start a new search? y/n\n>").lower().strip()
+        start_new_search = input("Would you like to start a new search? y/n"
+                                 "\n>").lower().strip()
         if validate_yes_or_no(start_new_search):
             break
     if start_new_search == "y":
@@ -208,12 +226,18 @@ def final_results_return_all(row):
     user in a way that is easy to read and understand.
     """
     show_info = SHEET.worksheet('data').row_values(row)
-    print(f"All available information on {show_info[0]}:\nDescription:\n{show_info[1]}\n")
+    print(f"All available information on {show_info[0]}:\nDescription:"
+          f"\n{show_info[1]}\n")
     sub_genres = reformat_info(show_info[2])
     creators = reformat_info(show_info[3])
     actors = reformat_info(show_info[4])
-    print(f"Sub-genres:\n{sub_genres}\n\nCreated by:\n{creators}\n\nStarring:\n{actors}\n")
-    print(f"Release Date:\n{show_info[0]} first aired in {show_info[5]}\n\nStill Running?\n{show_info[6]}\n\nNo. of Seasons:\n{show_info[0]} has {show_info[7]} season/s.\n\nAudience Score:\n{show_info[0]} was given a score of {show_info[8]} on Rotten Tomatoes.\n")
+    print(f"Sub-genres:\n{sub_genres}\n\nCreated by:\n{creators}\n\nStar"
+          f"ring:\n{actors}\n")
+    print(f"Release Date:\n{show_info[0]} first aired in {show_info[5]}\n"
+          f"\nStill Running?\n{show_info[6]}\n\nNo. of Seasons:\n"
+          f"{show_info[0]} has {show_info[7]} season/s.\n\nAudience Score:"
+          f"\n{show_info[0]} was given a score of {show_info[8]} on Rotten"
+          " Tomatoes.\n")
     new_search()
 
 
@@ -223,7 +247,8 @@ def search_in_show_choice(show):
     to find further information.
     """
     while True:
-        category_choice = input(f"What would you like to know about {show}?\n{instructions.CATEGORIES}\n>")
+        category_choice = input(f"What would you like to know about {show}?"
+                                f"\n{instructions.CATEGORIES}\n>")
         if validate_category_choice(category_choice):
             break
     cell = str(SHEET.worksheet('data').find(show))
@@ -243,13 +268,27 @@ def search_in_dictionary(dictionary):
     """
     while True:
         if len(dictionary) > 1:
-            dict_num = input("Which result would you like more information on?\n>")
+            dict_num = input("Which result would you like more information on?"
+                             "\n>")
         else:
-            dict_num = input("If you would like more information please type 0\n>")
+            dict_num = input("If you would like more information please type 0"
+                             "\n>")
         if validate_dict_keys(dict_num, dictionary):
             break
     show_title = str(dictionary[int(dict_num)].split('-')[0]).strip()
     search_in_show_choice(show_title)
+
+
+def add_title(search_term):
+    """
+    Takes a chosen search term and adds the relevant title
+    returns a string with the two bits of data combined
+    """
+    cell = str(SHEET.worksheet('data').find(search_term))
+    item_row = find_row(cell)
+    item_title = SHEET.worksheet('data').cell(item_row, 1).value
+    full_item = item_title + " - " + search_term
+    return full_item
 
 
 def search_columns(keyword, chosen, column):
@@ -257,47 +296,44 @@ def search_columns(keyword, chosen, column):
     Searches through the column of seleted category and compares the keyword
     to the items in the column.
     """
+    is_response_menu(keyword)
     whole_chosen_col = SHEET.worksheet('data').col_values(column)
     chosen_col = whole_chosen_col[1:]
     search_results = []
-    if column != 1:   
+    if column != 1:
         for item in chosen_col:
             if keyword.lower() in item.lower():
-                cell = str(SHEET.worksheet('data').find(item))
-                item_row = find_row(cell)
-                item_title = SHEET.worksheet('data').cell(item_row, 1).value
-                full_item = item_title + " - " + item
-                search_results.append(full_item)          
-        if search_results != []:
-            d1= dict(enumerate(search_results))
-            print(f"The following items matched your search:\n{d1}")
-            search_in_dictionary(d1)
-        elif search_results == []:
+                full_item = add_title(item)
+                search_results.append(full_item)
+        if search_results:
+            results_dict = dict(enumerate(search_results))
+            print(f"The following item/s matched your search:\n{results_dict}")
+            search_in_dictionary(results_dict)
+        elif not search_results:
             print("No matching results, please try again.")
-            chosen_search( chosen, column)
+            chosen_search(chosen, column)
     elif column == 1:
         for item in chosen_col:
             if keyword.lower() in item.lower():
-                search_results.append(item)            
-        if search_results != []:
-            d1= dict(enumerate(search_results))
-            print(f"The following items matched your search:\n{d1}")
-            search_in_dictionary(d1)
-        elif search_results == []:
+                search_results.append(item)
+        if search_results:
+            results_dict = dict(enumerate(search_results))
+            print(f"The following item/s matched your search:\n{results_dict}")
+            search_in_dictionary(results_dict)
+        elif not search_results:
             print("No matching results, please try again.")
             chosen_search(chosen, column)
 
 
 def main():
     """
-    runs the program
+    Begins the program and when called again starts a new search
     """
     print(instructions.INSTRUCTIONS_DESCRIPTION)
     print(instructions.MENU)
     validated_response = user_response_int()
     menu_answers(validated_response)
-    
-    
+
+
 print(instructions.WELCOME)
 main()
-
