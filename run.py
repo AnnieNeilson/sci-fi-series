@@ -87,7 +87,7 @@ def chosen_search(chosen, column):
     Prints instructions to the user regarding their last input
     """
     search_term = str(input(f"You've chosen to search by {chosen}. Type in a "
-                             "relevant search term:\n>")).strip()
+                            "relevant search term:\n>")).strip()
     search_columns(search_term, column, chosen)
 
 
