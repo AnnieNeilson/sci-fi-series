@@ -1,11 +1,10 @@
 WELCOME = ("Welcome to this database of information on popular Sci-Fi TV shows"
            ".\n")
 INSTRUCTIONS_DESCRIPTION = ("To Navigate this database input the number of the"
-                            " option you would like to \nchoose, or a relevant"
+                            " option you would like to \nchoose or a relevant"
                             " search term and press enter."
                             "\nTo see the menu at any time type 'menu'\nTo"
-                            " exit bring up the menu and choose not to start"
-                            " a new search")
+                            " exit bring up the menu and type 'n'")
 MENU = ("Menu:\nsearch by title (1)\nsearch by subgenre (2)\nsearch by year (3"
         ")\nsearch by creator (4)\nsearch by actor (5)\n")
 CATEGORIES = ("Description (1)\nSub-genre (2)\nCreator (3)\nActors (4)\nReleas"
