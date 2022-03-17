@@ -357,7 +357,6 @@ def main():
     """
     Begins the program and when called again starts a new search
     """
-    print(instructions.INSTRUCTIONS_DESCRIPTION)
     print(instructions.MENU)
     validated_response = user_response_int()
     category, column = menu_answers(validated_response)
@@ -365,4 +364,5 @@ def main():
 
 
 print(instructions.WELCOME)
+print(instructions.INSTRUCTIONS_DESCRIPTION)
 main()
